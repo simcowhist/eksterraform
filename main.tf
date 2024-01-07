@@ -18,11 +18,11 @@ module "vpc" {
   enable_nat_gateway = var.enable_nat_gateway
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.project_name}-clst-${terraform.workspace}" = "shared"
-    "kubernetes.io/role/elb"                         = 1
+    "kubernetes.io/role/elb"                                                = 1
   }
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.project_name}-clst-${terraform.workspace}" = "shared"
-    "kubernetes.io/role/internal-elb"                = 1
+    "kubernetes.io/role/internal-elb"                                       = 1
   }
 }
 
@@ -65,18 +65,18 @@ module "eks" {
 
 
 module "argocd" {
-  source = "./modules/argocd"
+  source            = "./modules/argocd"
   oidc_provider_arn = module.eks.oidc_provider_arn
-  cluster_name = module.eks.cluster_name
+  cluster_name      = module.eks.cluster_name
 
-  depends_on = [ module.eks.cluster_name ]
+  depends_on = [module.eks.cluster_name]
 }
 
 module "rds" {
   source = "./modules/rds"
 
   db_name               = var.project_name
-  identifier = "${var.project_name}-rds-${terraform.workspace}"
+  identifier            = "${var.project_name}-rds-${terraform.workspace}"
   sg_name               = "${var.project_name}-dbsg-${terraform.workspace}"
   cidr_block            = module.vpc.vpc_cidr_block
   database_subnet_group = module.vpc.database_subnet_group
